@@ -1,15 +1,25 @@
 
 
 import { useState, useEffect } from 'react'
-export default function DefaultLayout() {
+import MovieCard from '../components/MovieCard.jsx'
+
+export default function HomePage() {
 
     const [movies, setMovies] = useState([]);
+  
 
     useEffect(() => {
-        const api_url = import.meta.env.VITE_API_SERVER_ADDRESS + '/api/movies'
+        const api_url = import.meta.env.VITE_API_SERVER_ADDRESS + "/api/movies";
+        console.log('Fetching from:', api_url);
         fetch(api_url)
-            .then(response => response.json())
-            .then(data => setMovies(data.results))
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                console.log('Data received:', data);
+                setMovies(data.results || data);
+            })
             .catch(error => console.error('Error fetching movies:', error));
     }, []);
 
